@@ -1,0 +1,23 @@
+# ###### 설정 사항 ########
+# 1) wiki 의 경로. (sh 파일 기준으로 상대경로)
+config_dir='./wiki'
+
+
+# 2) 압축파일 암호
+config_zip_password='1234'
+
+
+# 3) 압축파일 명
+config_zip_filename='mw-backup'
+
+
+# 4) DB 의 user
+config_db_user='db_user'
+
+
+# 5) DB 의 암호
+config_db_password='yourpassword'
+
+
+# 6) DB 이름
+config_db_database='db_name'
