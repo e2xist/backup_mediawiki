@@ -11,13 +11,17 @@ config_zip_password='1234'
 config_zip_filename='mw-backup'
 
 
-# 4) DB 의 user
+# 4) 압축파일 명. 뒷부분 날짜 부분. (ymd/md 에서 선택. 없으면 suffix 가 안 붙음)
+config_zip_suffix='ym'
+
+
+# 5) DB 의 user
 config_db_user='db_user'
 
 
-# 5) DB 의 암호
+# 6) DB 의 암호
 config_db_password='yourpassword'
 
 
-# 6) DB 이름
+# 7) DB 이름
 config_db_database='db_name'

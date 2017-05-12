@@ -1,17 +1,33 @@
 #! /bin/bash
 # #######################
-# 파일 백업. 압축해서 하나의 파일로 저장.
-# 1) 해야하는 파일 백업
-#     /LocalSettings.php
-#     /images/*
-# 2) 데이터베이스 백업
+# 미디어위키 백업 스크립트 
+# Version : 1.0.0
+# 
+# 이 스크립트 설명
+# /LocalSettings.php, /images/*, 데이터베이스 를 하나의 파일에 백업합니다. 
+# 암호 를 지정해서 압축합니다.
 # #######################
 cd "$(dirname "$0")"
 
 
+# ###### 구문 시작 ########
+for i in {1..5}
+do
+echo 
+done
+echo ==============================
+echo ★ Mediawiki Backup Script ★
+echo ==============================
+for i in {1..29}
+do
+sleep 0.1
+echo -n ▷
+done
+echo ▷
+
 
 # ###### 설정 사항 ########
-configfile='backup_mediawiki_config'
+configfile='backup-mediawiki-config'
 if [ -f ${configfile} ]; then
     echo "Reading user config...." >&2
 
@@ -29,30 +45,15 @@ else
 fi
 
 
-
-
-# ###### 구문 시작 ########
-for i in {1..30}
-do
-echo 
-done
-echo ==============================
-echo ★ Mediawiki Backup Script ★
-echo ==============================
-for i in {1..29}
-do
-sleep 0.1
-echo -n ▷
-done
-echo ▷
-
+# checking config value
 if [ -z "$config_dir" ]; then
   echo $config_dir
   echo '설정이 잘못되었습니다. 백업을 수행하지 못했습니다.'
   exit 1
 fi
 
-# 데이터베이스 백업
+
+# backup database [mysql]
 if [ -n "$config_db_user" ]
 then 
   filename_dbdump="temp-dbdump-$(date +'%Y%m%d').sql"
@@ -63,10 +64,16 @@ then
 fi
 
 # 압축할 파일명 (파일명 + 날짜)
-filename="${config_zip_filename}-$(date +'%Y%m%d')"
+if [ "$config_zip_suffix" == "ymd" ];then 
+  filename="${config_zip_filename}-$(date +'%Y%m%d')"
+elif [ "$config_zip_suffix" == "ym" ];then
+  filename="${config_zip_filename}-$(date +'%Y%m')"
+else
+  filename="${config_zip_filename}"
+fi
 
 # 파일 압축 tar.gz 으로 압축 
-cmd_targz="tar -czvf ${filename}.tar.gz -C $config_dir LocalSettings.php images"
+cmd_targz="tar -czf ${filename}.tar.gz -C $config_dir LocalSettings.php images"
 
 # 암호 압축. zip 으로 최종 압축.
 cmd_passzip="zip -P $config_zip_password -0 ${filename}.tar.gz.zip ${filename}.tar.gz $filename_dbdump"
@@ -74,11 +81,11 @@ cmd_passzip="zip -P $config_zip_password -0 ${filename}.tar.gz.zip ${filename}.t
 cmd_remove_targz="rm ./${filename}.tar.gz"
 
 # 커맨드 실행
-echo '데이터베이스 백업을 진행합니다.'
-echo "Command Debug DBDump[ $cmd_mysqldump ]"
+echo '데이터베이스 백업을 진행합니다...'
+# echo "Command Debug DBDump[ $cmd_mysqldump ]"
 eval $cmd_mysqldump
 
-echo '파일 백업을 진행합니다.'
+echo '파일 백업을 진행합니다...'
 cmd_total="$cmd_targz && $cmd_passzip && $cmd_remove_targz && $cmd_remove_dbdump"
 echo "Command Debug [ ${cmd_total} ]"
 eval "$cmd_total"
@@ -86,10 +93,12 @@ eval "$cmd_total"
 
 # eval "$cmd_remove_targz && $cmd_remove_dbdump"
 
-echo '다음의 백업파일이 생성되었습니다.'
-echo "${filename}.tar.gz.zip"
+echo ''
+echo '다음의 백업파일이 성공적으로 생성되었습니다.'
+echo "★ 백업시간 : $(date +'%Y%m%d %r')"
+echo "★ 파일명 : ${filename}.tar.gz.zip"
 
-for i in {1..10}
+for i in {1..5}
 do
 echo 
 done
