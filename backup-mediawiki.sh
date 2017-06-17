@@ -76,7 +76,7 @@ fi
 cmd_targz="tar -czf ${filename}.tar.gz -C $config_dir LocalSettings.php images"
 
 # 암호 압축. zip 으로 최종 압축.
-cmd_passzip_mv="mv -f ./${filename}.tar.zip ./${config_zip_filename}_old.tar.zip"
+cmd_passzip_mv="mv -f ./${filename}.tar.zip ./${config_zip_filename}-old.tar.zip"
 
 cmd_passzip="zip -P $config_zip_password ${filename}.tar.zip ./${filename}.tar.gz ./$filename_dbdump"
 
