@@ -1,7 +1,7 @@
 #! /bin/bash
 # #######################
 # 미디어위키 백업 스크립트 
-# Version : 1.0.0
+# Version : 1.0.1
 # 
 # 이 스크립트 설명
 # /LocalSettings.php, /images/*, 데이터베이스 를 하나의 파일에 백업합니다. 
@@ -76,9 +76,16 @@ fi
 cmd_targz="tar -czf ${filename}.tar.gz -C $config_dir LocalSettings.php images"
 
 # 암호 압축. zip 으로 최종 압축.
-cmd_passzip="zip -P $config_zip_password -0 ${filename}.tar.gz.zip ${filename}.tar.gz $filename_dbdump"
+cmd_passzip_mv="mv -f ./${filename}.tar.zip ./${config_zip_filename}_old.tar.zip"
+
+cmd_passzip="zip -P $config_zip_password ${filename}.tar.zip ./${filename}.tar.gz ./$filename_dbdump"
 
 cmd_remove_targz="rm ./${filename}.tar.gz"
+
+
+echo "기존 압축파일이 있을 시 ${config_zip_filename}_old.tar.zip 으로 백업합니다."
+eval $cmd_passzip_mv
+
 
 # 커맨드 실행
 echo '데이터베이스 백업을 진행합니다...'
