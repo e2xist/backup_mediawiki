@@ -8,7 +8,7 @@
 # 암호 를 지정해서 압축합니다.
 # #######################
 cd "$(dirname "$0")"
-
+CFG_IS_DEBUG=false
 
 # ###### 구문 시작 ########
 for i in {1..5}
@@ -57,7 +57,7 @@ fi
 if [ -n "$config_db_user" ]
 then 
   filename_dbdump="temp-dbdump-$(date +'%Y%m%d').sql"
-  cmd_mysqldump="mysqldump --user=${config_db_user} --password=${config_db_password} ${config_db_database} > $filename_dbdump"
+  cmd_mysqldump="mysqldump --user=${config_db_user} --password='${config_db_password}' ${config_db_database} > $filename_dbdump"
 
   # 임시생성된 DB백업 파일 지우는 커맨드
   cmd_remove_dbdump="rm ./$filename_dbdump"
@@ -89,12 +89,17 @@ eval $cmd_passzip_mv
 
 # 커맨드 실행
 echo '데이터베이스 백업을 진행합니다...'
-# echo "Command Debug DBDump[ $cmd_mysqldump ]"
-eval $cmd_mysqldump
+if [ "$CFG_IS_DEBUG" = true ] ; then
+  echo "Command Debug DBDump[ $cmd_mysqldump ]"
+  eval $cmd_mysqldump
+fi
+
 
 echo '파일 백업을 진행합니다...'
 cmd_total="$cmd_targz && $cmd_passzip && $cmd_remove_targz && $cmd_remove_dbdump"
+if [ "$CFG_IS_DEBUG" = true ] ; then
 echo "Command Debug [ ${cmd_total} ]"
+fi
 eval "$cmd_total"
 
 
